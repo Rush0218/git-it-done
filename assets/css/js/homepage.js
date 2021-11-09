@@ -4,17 +4,12 @@ var repoContainerEl = document.querySelector("#repos-container");
 var repoSearchTerm = document.querySelector("#repo-search-term"); 
 
 var getUserRepos = function(user) {
-    // check if api returned any repos
-if (repos.length === 0) {
-    repoContainerEl.textContent = "No repositories found.";
-    return;
-  }
     //format the git hub api url
     var apiUrl = "https://api.github.com/users/" + user + "/repos"; 
     //make a request to the url 
     fetch(apiUrl).then(function(response) {
         if(response.ok) {
-        response.json().then(function(data) {
+            response.json().then(function(data) {
             displayRepos(data, user); 
             });
         } else {
@@ -28,9 +23,11 @@ if (repos.length === 0) {
 };
 
 var formSubmitHandler = function(event) {
+    //prevent page from refreshing
     event.preventDefault(); 
-    
+    //get value from input field
     var username = nameInputEl.value.trim(); 
+
     if(username) {
         getUserRepos(username); 
         nameInputEl.value = ""; 
@@ -41,8 +38,12 @@ var formSubmitHandler = function(event) {
 
 //create a function to accept both an array of repository data and the term searched
 var displayRepos = function(repos, searchTerm) {
-    //clear old content
-    repoContainerEl.textContent = ""; 
+    // check if api returned any repos
+    if (repos.length === 0) {
+        repoContainerEl.textContent = "No repositories found.";
+        return;
+    }
+
     repoSearchTerm.textContent = searchTerm; 
 
     //loop over repos 
@@ -79,7 +80,5 @@ var displayRepos = function(repos, searchTerm) {
     }
 }
 
+//add listener to forms 
 userFormEl.addEventListener("submit", formSubmitHandler); 
-
-
-getUserRepos(); 
